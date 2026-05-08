@@ -1,7 +1,13 @@
 import "./App.css";
+import Layout from "./components/layout";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
-  return <div className="text-red-300">Hello</div>;
+  return (
+    <BrowserRouter>
+      <Layout />;
+    </BrowserRouter>
+  );
 }
 
 export default App;
