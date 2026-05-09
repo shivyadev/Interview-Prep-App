@@ -65,7 +65,7 @@ export function AppSidebar() {
                     {({ isActive }) => (
                       <SidebarMenuButton
                         isActive={isActive}
-                        className="mx-2 rounded-lg"
+                        className="mx-2 my-1 rounded-lg"
                       >
                         <item.icon className="h-4 w-4" />
                         <span>{item.label}</span>
