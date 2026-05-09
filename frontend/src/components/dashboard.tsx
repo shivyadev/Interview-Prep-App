@@ -1,5 +1,7 @@
 import { ActivityChart, ProgressChart } from "./charts";
 import { DashboardHeader } from "./dashboard-header";
+import { ProblemsTable } from "./problems-table";
+import { StudyPlanCard, UpcomingInterviewsCard } from "./sidebar-cards";
 import StatCards from "./stat-cards";
 
 export default function Dashboard() {
@@ -17,8 +19,12 @@ export default function Dashboard() {
                 <ActivityChart />
                 <ProgressChart />
               </div>
+              <ProblemsTable page="dashboard" />
             </div>
-            <div className="space-y-6">SideBox</div>
+            <div className="space-y-6">
+              <UpcomingInterviewsCard />
+              <StudyPlanCard />
+            </div>
           </div>
         </div>
       </div>
