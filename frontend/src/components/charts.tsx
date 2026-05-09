@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Area,
@@ -105,7 +103,7 @@ export function ProgressChart() {
         </CardTitle>
       </CardHeader>
       <CardContent className="pb-4">
-        <div className="h-[200px]">
+        <div className="h-50">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={progressData}>
               <CartesianGrid
