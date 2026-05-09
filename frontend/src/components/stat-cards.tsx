@@ -68,7 +68,7 @@ export default function StatCards() {
             <div className="text-2xl font-bold text-foreground">
               {stat.value}
             </div>
-            <div className="flex items-center gap-1 text-xs">
+            <div className="flex items-center mt-2 gap-1 text-xs">
               {stat.trend === "up" ? (
                 <TrendingUp className="h-3 w-3 text-chart-2" />
               ) : (

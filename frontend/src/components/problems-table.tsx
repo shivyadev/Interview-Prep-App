@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -24,6 +24,8 @@ import {
   CheckCircle2,
   Circle,
   RotateCcw,
+  Code2,
+  Plus,
 } from "lucide-react";
 
 type Difficulty = "Easy" | "Medium" | "Hard";
@@ -128,10 +130,10 @@ interface ProblemsTableProps {
 }
 
 export function ProblemsTable({ page }: ProblemsTableProps) {
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [difficultyFilter, setDifficultyFilter] = React.useState<
-    Difficulty | "All"
-  >("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "All">(
+    "All"
+  );
 
   const filteredProblems = problems.filter((problem) => {
     const matchesSearch =
@@ -141,6 +143,8 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
       difficultyFilter === "All" || problem.difficulty === difficultyFilter;
     return matchesSearch && matchesDifficulty;
   });
+
+  const [empty] = useState<boolean>(true);
 
   return (
     <Card className="border-border bg-card">
@@ -217,43 +221,68 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredProblems.map((problem) => (
-                <TableRow
-                  key={problem.id}
-                  className="border-border hover:bg-muted/50"
-                >
-                  <TableCell>{statusIcons[problem.status]}</TableCell>
-                  <TableCell className="font-medium text-foreground">
-                    {problem.title}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground hidden sm:table-cell">
-                    {problem.category}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="secondary"
-                      className={difficultyColors[problem.difficulty]}
-                    >
-                      {problem.difficulty}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground hidden md:table-cell">
-                    {problem.acceptance}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground hidden lg:table-cell">
-                    {problem.lastAttempt || "-"}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
+              {!empty ? (
+                filteredProblems.map((problem) => (
+                  <TableRow
+                    key={problem.id}
+                    className="border-border hover:bg-muted/50"
+                  >
+                    <TableCell>{statusIcons[problem.status]}</TableCell>
+                    <TableCell className="font-medium text-foreground">
+                      {problem.title}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground hidden sm:table-cell">
+                      {problem.category}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="secondary"
+                        className={difficultyColors[problem.difficulty]}
+                      >
+                        {problem.difficulty}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground hidden md:table-cell">
+                      {problem.acceptance}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground hidden lg:table-cell">
+                      {problem.lastAttempt || "-"}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={7} className="h-75">
+                    <div className="flex flex-col items-center justify-center gap-4 text-center">
+                      <div className="rounded-full bg-muted p-4">
+                        <Code2 className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-medium text-foreground">
+                          No problems yet
+                        </h3>
+                        <p className="text-sm text-muted-foreground max-w-sm">
+                          Start tracking your coding journey by adding your
+                          first problem.
+                        </p>
+                      </div>
+                      <Button className="gap-2 bg-primary hover:bg-primary/90">
+                        <Plus className="h-4 w-4" />
+                        Add Your First Problem
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>

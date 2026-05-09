@@ -7,28 +7,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Bell, Plus, Search } from "lucide-react";
+import { Bell, Plus, Briefcase } from "lucide-react";
 
-export function DashboardHeader() {
+interface HeaderProps {
+  page: "dashboard" | "problems" | "applications";
+}
+
+export function Header({ page }: HeaderProps) {
   return (
     <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 lg:px-6">
       <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
       <Separator orientation="vertical" className="h-auto" />
 
       <div className="flex-1">
-        <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+        <h1 className="text-lg font-semibold text-foreground">
+          {page[0].toUpperCase() + page.slice(1)}
+        </h1>
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <Search className="h-5 w-5" />
-          <span className="sr-only">Search</span>
-        </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -63,10 +60,19 @@ export function DashboardHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">New Problem</span>
-        </Button>
+        {(page == "dashboard" || page == "applications") && (
+          <Button variant="outline" size="sm" className="gap-2">
+            <Briefcase className="h-4 w-4" />
+            <span className="hidden sm:inline">Track Application</span>
+          </Button>
+        )}
+
+        {(page == "dashboard" || page == "problems") && (
+          <Button size="sm" className="gap-2">
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">New Problem</span>
+          </Button>
+        )}
       </div>
     </header>
   );
