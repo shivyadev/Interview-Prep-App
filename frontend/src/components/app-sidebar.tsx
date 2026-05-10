@@ -1,8 +1,8 @@
 import {
   LayoutDashboard,
   Code2,
-  BookOpen,
-  BarChart3,
+  // BookOpen,
+  // BarChart3,
   // Settings,
   Calendar,
   // Trophy,
@@ -28,9 +28,14 @@ import { NavLink } from "react-router-dom";
 const navItems = [
   { icon: LayoutDashboard, path: "/", label: "Dashboard", active: true },
   { icon: Code2, path: "/problems", label: "Problems", active: false },
-  { icon: BookOpen, path: "/zero", label: "Study Plan", active: false },
-  { icon: BarChart3, path: "/zero", label: "Analytics", active: false },
-  { icon: Calendar, path: "/zero", label: "Schedule", active: false },
+  // { icon: BookOpen, path: "/zero", label: "Study Plan", active: false },
+  // { icon: BarChart3, path: "/zero", label: "Analytics", active: false },
+  {
+    icon: Calendar,
+    path: "/applications",
+    label: "Applications",
+    active: false,
+  },
 ];
 
 export function AppSidebar() {

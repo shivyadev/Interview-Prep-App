@@ -286,7 +286,7 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
             </TableBody>
           </Table>
         </div>
-        {page == "problems" && (
+        {page == "problems" && !empty && (
           <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
             <span>
               Showing {filteredProblems.length} of {problems.length} problems
