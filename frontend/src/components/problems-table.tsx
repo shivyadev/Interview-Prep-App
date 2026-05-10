@@ -27,6 +27,7 @@ import {
   Code2,
   Plus,
 } from "lucide-react";
+import { AddProblemModal } from "./add-problems-modal";
 
 type Difficulty = "Easy" | "Medium" | "Hard";
 type Status = "Solved" | "Attempted" | "Todo";
@@ -275,10 +276,14 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                           first problem.
                         </p>
                       </div>
-                      <Button className="gap-2 bg-primary hover:bg-primary/90">
-                        <Plus className="h-4 w-4" />
-                        Add Your First Problem
-                      </Button>
+                      <AddProblemModal
+                        trigger={
+                          <Button className="gap-2 bg-primary hover:bg-primary/90">
+                            <Plus className="h-4 w-4" />
+                            Add Your First Problem
+                          </Button>
+                        }
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

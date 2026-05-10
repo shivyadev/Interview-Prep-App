@@ -7,7 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Bell, Plus, Briefcase } from "lucide-react";
+import { Bell, Briefcase, Plus } from "lucide-react";
+import { AddProblemModal } from "./add-problems-modal";
+import { AddApplicationModal } from "./add-applications-modal";
 
 interface HeaderProps {
   page: "dashboard" | "problems" | "applications";
@@ -61,17 +63,25 @@ export function Header({ page }: HeaderProps) {
         </DropdownMenu>
 
         {(page == "dashboard" || page == "applications") && (
-          <Button variant="outline" size="sm" className="gap-2">
-            <Briefcase className="h-4 w-4" />
-            <span className="hidden sm:inline">Track Application</span>
-          </Button>
+          <AddApplicationModal
+            trigger={
+              <Button variant="outline" size="sm" className="gap-2">
+                <Briefcase className="h-4 w-4" />
+                <span className="hidden sm:inline">Track Application</span>
+              </Button>
+            }
+          />
         )}
 
         {(page == "dashboard" || page == "problems") && (
-          <Button size="sm" className="gap-2">
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">New Problem</span>
-          </Button>
+          <AddProblemModal
+            trigger={
+              <Button size="sm" className="gap-2">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">New Problem</span>
+              </Button>
+            }
+          />
         )}
       </div>
     </header>

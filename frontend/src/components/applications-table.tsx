@@ -27,6 +27,7 @@ import {
   MapPin,
   Calendar,
 } from "lucide-react";
+import { AddApplicationModal } from "./add-applications-modal";
 
 type ApplicationStatus =
   | "Applied"
@@ -105,7 +106,7 @@ export function ApplicationsTable() {
                 placeholder="Search applications..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full pl-9 sm:w-[200px] bg-muted border-border"
+                className="h-9 w-full pl-9 sm:w-50 bg-muted border-border"
               />
             </div>
             <DropdownMenu>
@@ -191,10 +192,14 @@ export function ApplicationsTable() {
                           follow-ups all in one place.
                         </p>
                       </div>
-                      <Button className="gap-2 bg-primary hover:bg-primary/90">
-                        <Plus className="h-4 w-4" />
-                        Add Your First Application
-                      </Button>
+                      <AddApplicationModal
+                        trigger={
+                          <Button className="gap-2 bg-primary hover:bg-primary/90">
+                            <Plus className="h-4 w-4" />
+                            Add Your First Application
+                          </Button>
+                        }
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
