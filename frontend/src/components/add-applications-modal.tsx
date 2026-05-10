@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -58,14 +57,6 @@ const applicationSources = [
 ];
 
 const workLocations = ["Remote", "On-site", "Hybrid"];
-const priorityLevels = ["Low", "Medium", "High", "Dream Company"];
-const interestRatings = [
-  "1 - Not Interested",
-  "2 - Somewhat",
-  "3 - Interested",
-  "4 - Very Interested",
-  "5 - Dream Job",
-];
 
 export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
   const [open, setOpen] = useState(false);
@@ -232,59 +223,6 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
                   <Label htmlFor="dateApplied">Date Applied *</Label>
                   <Input id="dateApplied" type="date" required />
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="nextFollowUp">Next Follow-up Date</Label>
-                  <Input id="nextFollowUp" type="date" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="priority">Priority Level</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Set priority" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {priorityLevels.map((level) => (
-                        <SelectItem
-                          key={level}
-                          value={level.toLowerCase().replace(/\s+/g, "-")}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={`h-2 w-2 rounded-full ${
-                                level === "Dream Company"
-                                  ? "bg-violet-500"
-                                  : level === "High"
-                                  ? "bg-rose-500"
-                                  : level === "Medium"
-                                  ? "bg-amber-500"
-                                  : "bg-slate-400"
-                              }`}
-                            />
-                            {level}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="interest">Interest Rating</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Rate your interest" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {interestRatings.map((rating) => (
-                        <SelectItem key={rating} value={rating.split(" - ")[0]}>
-                          {rating}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
             </div>
 
@@ -390,47 +328,16 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
                     placeholder="e.g., jane@company.com"
                   />
                 </div>
-
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="referral">Referral Information</Label>
-                  <Input
-                    id="referral"
-                    placeholder="Who referred you? Their name and relationship"
-                  />
-                </div>
               </div>
             </div>
 
             {/* Documents & Compensation */}
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Documents & Compensation
+                Compensation
               </h3>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="resumeVersion">Resume Version Used</Label>
-                  <Input
-                    id="resumeVersion"
-                    placeholder="e.g., SWE_v3, Backend_focused"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="coverLetter">Cover Letter Status</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Cover letter?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="not-required">Not Required</SelectItem>
-                      <SelectItem value="submitted">Submitted</SelectItem>
-                      <SelectItem value="custom">Custom Written</SelectItem>
-                      <SelectItem value="template">Used Template</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="salaryMin">Expected Salary (Min)</Label>
                   <Input
@@ -446,35 +353,6 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
                     id="salaryMax"
                     type="number"
                     placeholder="e.g., 150000"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Notes */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Notes
-              </h3>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="interviewNotes">
-                    Interview / Conversation Notes
-                  </Label>
-                  <Textarea
-                    id="interviewNotes"
-                    placeholder="Notes from interviews, recruiter calls, or any other interactions..."
-                    className="min-h-20"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="generalNotes">General Notes</Label>
-                  <Textarea
-                    id="generalNotes"
-                    placeholder="Any other notes about this application..."
-                    className="min-h-15"
                   />
                 </div>
               </div>

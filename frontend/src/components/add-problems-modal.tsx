@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -21,9 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, X, Code2 } from "lucide-react";
+import { Plus, Code2 } from "lucide-react";
 
 const platforms = [
   "LeetCode",
@@ -67,13 +65,6 @@ const confidenceLevels = [
   "4 - High",
   "5 - Very High",
 ];
-const tagOptions = [
-  "Important",
-  "Frequently Asked",
-  "Interview Favorite",
-  "Needs Review",
-  "Tricky",
-];
 
 interface AddProblemModalProps {
   trigger: React.ReactNode;
@@ -81,26 +72,6 @@ interface AddProblemModalProps {
 
 export function AddProblemModal({ trigger }: AddProblemModalProps) {
   const [open, setOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [companyTags, setCompanyTags] = useState<string[]>([]);
-  const [newCompany, setNewCompany] = useState("");
-
-  const handleAddCompany = () => {
-    if (newCompany.trim() && !companyTags.includes(newCompany.trim())) {
-      setCompanyTags([...companyTags, newCompany.trim()]);
-      setNewCompany("");
-    }
-  };
-
-  const handleRemoveCompany = (company: string) => {
-    setCompanyTags(companyTags.filter((c) => c !== company));
-  };
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,11 +242,6 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="revisionDate">Next Revision Date</Label>
-                  <Input id="revisionDate" type="date" />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="timeTaken">Time Taken (minutes)</Label>
                   <Input
                     id="timeTaken"
@@ -299,113 +265,6 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-              </div>
-            </div>
-
-            {/* Notes & Learning */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Notes & Learning
-              </h3>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Personal Notes / Explanation</Label>
-                  <Textarea
-                    id="notes"
-                    placeholder="Write your approach, key insights, or explanation..."
-                    className="min-h-20"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="mistakes">Mistakes Made</Label>
-                  <Textarea
-                    id="mistakes"
-                    placeholder="What mistakes did you make during solving?"
-                    className="min-h-15"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="patterns">
-                    Patterns / Techniques Learned
-                  </Label>
-                  <Textarea
-                    id="patterns"
-                    placeholder="e.g., Two-pointer technique, Hash map for O(1) lookup..."
-                    className="min-h-15"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Tags & Labels */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Tags & Labels
-              </h3>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Quick Tags</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {tagOptions.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant={
-                          selectedTags.includes(tag) ? "default" : "outline"
-                        }
-                        className="cursor-pointer transition-colors"
-                        onClick={() => toggleTag(tag)}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Company Tags</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      value={newCompany}
-                      onChange={(e) => setNewCompany(e.target.value)}
-                      placeholder="Add company (e.g., Google, Amazon)"
-                      onKeyDown={(e) =>
-                        e.key === "Enter" &&
-                        (e.preventDefault(), handleAddCompany())
-                      }
-                    />
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={handleAddCompany}
-                    >
-                      Add
-                    </Button>
-                  </div>
-                  {companyTags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {companyTags.map((company) => (
-                        <Badge
-                          key={company}
-                          variant="secondary"
-                          className="gap-1"
-                        >
-                          {company}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveCompany(company)}
-                            className="ml-1 hover:text-destructive"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
