@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import {
   Dialog,
@@ -21,50 +19,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { Plus, Code2 } from "lucide-react";
 
-const platforms = [
-  "LeetCode",
-  "Codeforces",
-  "GeeksforGeeks",
-  "HackerRank",
-  "InterviewBit",
-  "CodeChef",
-  "Other",
-];
-const difficulties = ["Easy", "Medium", "Hard"];
-const statuses = ["Solved", "Attempted", "Revision Needed", "Not Started"];
-const categories = [
-  "Arrays",
-  "Strings",
-  "Linked Lists",
-  "Trees",
-  "Graphs",
-  "Dynamic Programming",
-  "Greedy",
-  "Backtracking",
-  "Binary Search",
-  "Two Pointers",
-  "Sliding Window",
-  "Stack",
-  "Queue",
-  "Heap",
-  "Hash Table",
-  "Recursion",
-  "Sorting",
-  "Math",
-  "Bit Manipulation",
-  "System Design",
-  "Database",
-  "Other",
-];
-const confidenceLevels = [
-  "1 - Very Low",
-  "2 - Low",
-  "3 - Medium",
-  "4 - High",
-  "5 - Very High",
-];
+import {
+  PLATFORMS,
+  CATEGORIES,
+  CONFIDENCE_LEVELS,
+  DIFFICULTIES,
+  STATUSES,
+  type Platforms,
+  type Difficulty,
+  type Category,
+  type Status,
+  type ConfidenceLevel,
+} from "@/types/problems";
 
 interface AddProblemModalProps {
   trigger: React.ReactNode;
@@ -78,6 +47,30 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
     // Handle form submission
     setOpen(false);
   };
+
+  const [form, setForm] = useState<{
+    title: string;
+    platform: Platforms;
+    url: string;
+    difficulty: Difficulty;
+    category: Category;
+    status: Status;
+    confidence: ConfidenceLevel;
+    dateSolved: Date;
+    timeTaken: number;
+    solutionType: string;
+  }>({
+    title: "",
+    platform: PLATFORMS[0],
+    url: "",
+    difficulty: DIFFICULTIES[0],
+    category: CATEGORIES[0],
+    status: STATUSES[0],
+    confidence: CONFIDENCE_LEVELS[0],
+    dateSolved: new Date(),
+    timeTaken: 0,
+    solutionType: "",
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -115,7 +108,15 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="title">Problem Title *</Label>
-                  <Input id="title" placeholder="e.g., Two Sum" required />
+                  <Input
+                    id="title"
+                    placeholder="e.g., Two Sum"
+                    value={form.title}
+                    onChange={(e) =>
+                      setForm({ ...form, title: e.target.value })
+                    }
+                    required
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -125,7 +126,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                       <SelectValue placeholder="Select platform" />
                     </SelectTrigger>
                     <SelectContent>
-                      {platforms.map((platform) => (
+                      {PLATFORMS.map((platform) => (
                         <SelectItem
                           key={platform}
                           value={platform.toLowerCase().replace(/\s+/g, "-")}
@@ -153,7 +154,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                       <SelectValue placeholder="Select difficulty" />
                     </SelectTrigger>
                     <SelectContent>
-                      {difficulties.map((diff) => (
+                      {DIFFICULTIES.map((diff) => (
                         <SelectItem key={diff} value={diff.toLowerCase()}>
                           <div className="flex items-center gap-2">
                             <span
@@ -180,7 +181,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((cat) => (
+                      {CATEGORIES.map((cat) => (
                         <SelectItem
                           key={cat}
                           value={cat.toLowerCase().replace(/\s+/g, "-")}
@@ -208,7 +209,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      {statuses.map((status) => (
+                      {STATUSES.map((status) => (
                         <SelectItem
                           key={status}
                           value={status.toLowerCase().replace(/\s+/g, "-")}
@@ -227,7 +228,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                       <SelectValue placeholder="Rate your confidence" />
                     </SelectTrigger>
                     <SelectContent>
-                      {confidenceLevels.map((level) => (
+                      {CONFIDENCE_LEVELS.map((level) => (
                         <SelectItem key={level} value={level.split(" - ")[0]}>
                           {level}
                         </SelectItem>
