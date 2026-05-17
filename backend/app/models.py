@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, Date
 from app.database import Base
 
 class Problem(Base):
@@ -11,8 +11,8 @@ class Problem(Base):
     category = Column(String)
     status = Column(String)
     confidence_level = Column(String)
-    date_solved = Column(DateTime)
-    time_taken = Column(DateTime)
+    date_solved = Column(Date)
+    time_taken = Column(Integer)
     solution_type = Column(String)
 
 class Application(Base):
@@ -26,8 +26,8 @@ class Application(Base):
     location = Column(String)
     status = Column(String)
     source = Column(String)
-    date_applied = Column(DateTime)
-    interview_date = Column(DateTime)
+    date_applied = Column(Date)
+    interview_date = Column(Date)
     interview_type = Column(String)
     rounds_completed = Column(String)
     recruiter_mail = Column(String)

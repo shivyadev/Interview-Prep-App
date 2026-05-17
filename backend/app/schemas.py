@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import time
+from datetime import date
 
 class ProblemsBase(BaseModel):
 
@@ -9,7 +9,7 @@ class ProblemsBase(BaseModel):
     category: str
     status: str 
     confidence_level: str
-    time_taken: time
+    time_taken: int
     solution_type: str 
 
 class ProblemsRequest(ProblemsBase):
@@ -29,7 +29,7 @@ class ApplicationsBase(BaseModel):
     location : str
     status : str
     source : str
-    interview_date : time
+    interview_date : date
     interview_type : str
     rounds_completed : str
     recruiter_mail : str
