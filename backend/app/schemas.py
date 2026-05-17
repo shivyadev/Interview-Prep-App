@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import date
+from uuid import UUID
 
 class ProblemsBase(BaseModel):
 
@@ -16,7 +17,7 @@ class ProblemsRequest(ProblemsBase):
     pass
 
 class ProblemsResponse(ProblemsBase):
-    id: int
+    id: UUID
     class Config:
         from_attributes = True
 
@@ -40,6 +41,6 @@ class ApplicationsRequest(ApplicationsBase):
     pass
 
 class ApplicationResponse(ApplicationsBase):
-    id: int
+    id: UUID
     class Config:
         from_attributes = True

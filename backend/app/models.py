@@ -1,10 +1,12 @@
 from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
+import uuid
 
 class Problem(Base):
     __tablename__= "problems"
 
-    id = Column(Integer, primary_key=True, index=True)   
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  
     title = Column(String)
     problem_url = Column(String)
     difficulty = Column(String)
@@ -18,7 +20,7 @@ class Problem(Base):
 class Application(Base):
     __tablename__= "applications"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     company = Column(String)
     role = Column(String)
     job_desc_url = Column(String)

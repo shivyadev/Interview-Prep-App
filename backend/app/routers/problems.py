@@ -17,5 +17,16 @@ def get_all_problems(db: Session = Depends(get_db)):
         raise HTTPException(status_code=200, detail="No values in the database")
 
     return items
+
+@router.post("/add", response_model=schemas.ProblemsResponse, status_code=201)
+def add_problem(problem: schemas.ProblemsRequest, db: Session = Depends(get_db)):
+
+    db_problem = models.Problem(**problem.model_dump())
+
+    db.add(db_problem)
+    db.commit()
+    db.refresh(db_problem)
+
+    return db_problem
     
 
