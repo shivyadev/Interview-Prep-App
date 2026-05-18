@@ -1,15 +1,3 @@
-export const PLATFORMS = [
-  "LeetCode",
-  "Codeforces",
-  "GeeksforGeeks",
-  "HackerRank",
-  "InterviewBit",
-  "CodeChef",
-  "Other",
-] as const;
-
-export type Platforms = (typeof PLATFORMS)[number];
-
 export const DIFFICULTIES = ["Easy", "Medium", "Hard"] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 
@@ -38,11 +26,11 @@ export const CATEGORIES = [
 ] as const;
 export type Category = (typeof CATEGORIES)[number];
 
-export const CONFIDENCE_LEVELS = [
-  "1 - Very Low",
-  "2 - Low",
-  "3 - Medium",
-  "4 - High",
-  "5 - Very High",
-] as const;
-export type ConfidenceLevel = (typeof CONFIDENCE_LEVELS)[number];
+export type ProblemsForm = {
+  title: string;
+  url: string;
+  difficulty: Difficulty;
+  category: Category;
+  status: Status;
+  time_taken: number;
+};

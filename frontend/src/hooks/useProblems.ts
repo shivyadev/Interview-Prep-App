@@ -1,3 +1,4 @@
+import type { ProblemsForm } from "@/types/problems";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -10,7 +11,7 @@ export const useProblems = () => {
   });
 
   const addProblem = useMutation({
-    mutationFn: (data) => axios.post("/problems/add", data),
+    mutationFn: (data: ProblemsForm) => axios.post("/problems/add", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["problems"] });
     },

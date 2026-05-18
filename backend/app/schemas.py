@@ -5,19 +5,18 @@ from uuid import UUID
 class ProblemsBase(BaseModel):
 
     title: str
-    problem_url: str
+    url: str
     difficulty: str 
     category: str
     status: str 
-    confidence_level: str
     time_taken: int
-    solution_type: str 
 
 class ProblemsRequest(ProblemsBase):
     pass
 
 class ProblemsResponse(ProblemsBase):
     id: UUID
+    date_solved: date
     class Config:
         from_attributes = True
 

@@ -23,17 +23,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus, Code2 } from "lucide-react";
 
 import {
-  PLATFORMS,
   CATEGORIES,
-  CONFIDENCE_LEVELS,
   DIFFICULTIES,
   STATUSES,
-  type Platforms,
-  type Difficulty,
-  type Category,
-  type Status,
-  type ConfidenceLevel,
+  type ProblemsForm,
 } from "@/types/problems";
+import { useProblems } from "@/hooks/useProblems";
+
+import { toast } from "sonner";
 
 interface AddProblemModalProps {
   trigger: React.ReactNode;
@@ -41,36 +38,35 @@ interface AddProblemModalProps {
 
 export function AddProblemModal({ trigger }: AddProblemModalProps) {
   const [open, setOpen] = useState(false);
+  const { addProblem } = useProblems();
+
+  const initialForm: Partial<ProblemsForm> = {
+    title: "",
+    url: "",
+    difficulty: undefined,
+    category: undefined,
+    status: undefined,
+    time_taken: 0,
+  };
+
+  const [form, setForm] = useState<Partial<ProblemsForm>>(initialForm);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    setOpen(false);
-  };
 
-  const [form, setForm] = useState<{
-    title: string;
-    platform: Platforms;
-    url: string;
-    difficulty: Difficulty;
-    category: Category;
-    status: Status;
-    confidence: ConfidenceLevel;
-    dateSolved: Date;
-    timeTaken: number;
-    solutionType: string;
-  }>({
-    title: "",
-    platform: PLATFORMS[0],
-    url: "",
-    difficulty: DIFFICULTIES[0],
-    category: CATEGORIES[0],
-    status: STATUSES[0],
-    confidence: CONFIDENCE_LEVELS[0],
-    dateSolved: new Date(),
-    timeTaken: 0,
-    solutionType: "",
-  });
+    if (!form.difficulty || !form.category || !form.status || !form.title) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    addProblem.mutate(form as ProblemsForm, {
+      onSuccess: () => {
+        setOpen(false);
+        setForm(initialForm);
+        toast.success("Problem added successfully");
+      },
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -120,36 +116,23 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="platform">Platform *</Label>
-                  <Select required>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select platform" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PLATFORMS.map((platform) => (
-                        <SelectItem
-                          key={platform}
-                          value={platform.toLowerCase().replace(/\s+/g, "-")}
-                        >
-                          {platform}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="url">Problem URL</Label>
                   <Input
                     id="url"
                     type="url"
                     placeholder="https://leetcode.com/problems/..."
+                    onChange={(e) => setForm({ ...form, url: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="difficulty">Difficulty *</Label>
-                  <Select required>
+                  <Select
+                    onValueChange={(value: (typeof DIFFICULTIES)[number]) =>
+                      setForm({ ...form, difficulty: value })
+                    }
+                    required
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select difficulty" />
                     </SelectTrigger>
@@ -176,16 +159,18 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category *</Label>
-                  <Select required>
+                  <Select
+                    onValueChange={(value: (typeof CATEGORIES)[number]) =>
+                      setForm({ ...form, category: value })
+                    }
+                    required
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
                       {CATEGORIES.map((cat) => (
-                        <SelectItem
-                          key={cat}
-                          value={cat.toLowerCase().replace(/\s+/g, "-")}
-                        >
+                        <SelectItem key={cat} value={cat}>
                           {cat}
                         </SelectItem>
                       ))}
@@ -204,7 +189,12 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="status">Status *</Label>
-                  <Select required>
+                  <Select
+                    onValueChange={(value: (typeof STATUSES)[number]) =>
+                      setForm({ ...form, status: value })
+                    }
+                    required
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
@@ -222,50 +212,20 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confidence">Confidence Level</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Rate your confidence" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CONFIDENCE_LEVELS.map((level) => (
-                        <SelectItem key={level} value={level.split(" - ")[0]}>
-                          {level}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="dateSolved">Date Solved</Label>
-                  <Input id="dateSolved" type="date" />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="timeTaken">Time Taken (minutes)</Label>
                   <Input
                     id="timeTaken"
                     type="number"
                     placeholder="e.g., 45"
                     min="0"
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        time_taken:
+                          e.target.value === "" ? 0 : Number(e.target.value),
+                      })
+                    }
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="selfSolved">Solution Type</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="How did you solve it?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="self">Self Solved</SelectItem>
-                      <SelectItem value="hint">Needed Hints</SelectItem>
-                      <SelectItem value="solution">
-                        Looked at Solution
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
             </div>
