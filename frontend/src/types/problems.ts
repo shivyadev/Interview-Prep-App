@@ -1,12 +1,7 @@
-export const DIFFICULTIES = ["Easy", "Medium", "Hard"] as const;
+export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 
-export const STATUSES = [
-  "Solved",
-  "Attempted",
-  "Revision Needed",
-  "Not Started",
-] as const;
+export const STATUSES = ["solved", "attempted", "todo"] as const;
 export type Status = (typeof STATUSES)[number];
 
 export const CATEGORIES = [
@@ -33,4 +28,15 @@ export type ProblemsForm = {
   category: Category;
   status: Status;
   time_taken: number;
+};
+
+export type ProblemsResponse = {
+  id: string;
+  title: string;
+  url: string;
+  difficulty: Difficulty;
+  category: Category;
+  status: Status;
+  time_taken: number;
+  date_solved: string;
 };

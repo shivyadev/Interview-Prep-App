@@ -28,102 +28,20 @@ import {
   Plus,
 } from "lucide-react";
 import { AddProblemModal } from "./add-problems-modal";
-
-type Difficulty = "Easy" | "Medium" | "Hard";
-type Status = "Solved" | "Attempted" | "Todo";
-
-interface Problem {
-  id: number;
-  title: string;
-  difficulty: Difficulty;
-  category: string;
-  status: Status;
-  acceptance: string;
-  lastAttempt?: string;
-}
-
-const problems: Problem[] = [
-  {
-    id: 1,
-    title: "Two Sum",
-    difficulty: "Easy",
-    category: "Arrays",
-    status: "Solved",
-    acceptance: "49.1%",
-    lastAttempt: "2 days ago",
-  },
-  {
-    id: 2,
-    title: "Add Two Numbers",
-    difficulty: "Medium",
-    category: "Linked List",
-    status: "Solved",
-    acceptance: "40.2%",
-    lastAttempt: "1 week ago",
-  },
-  {
-    id: 3,
-    title: "Longest Substring",
-    difficulty: "Medium",
-    category: "Strings",
-    status: "Attempted",
-    acceptance: "33.8%",
-    lastAttempt: "3 days ago",
-  },
-  {
-    id: 4,
-    title: "Median of Two Sorted Arrays",
-    difficulty: "Hard",
-    category: "Binary Search",
-    status: "Todo",
-    acceptance: "36.1%",
-  },
-  {
-    id: 5,
-    title: "Reverse Integer",
-    difficulty: "Medium",
-    category: "Math",
-    status: "Solved",
-    acceptance: "27.2%",
-    lastAttempt: "5 days ago",
-  },
-  {
-    id: 6,
-    title: "Container With Most Water",
-    difficulty: "Medium",
-    category: "Two Pointers",
-    status: "Attempted",
-    acceptance: "54.3%",
-    lastAttempt: "Yesterday",
-  },
-  {
-    id: 7,
-    title: "3Sum",
-    difficulty: "Medium",
-    category: "Arrays",
-    status: "Todo",
-    acceptance: "32.5%",
-  },
-  {
-    id: 8,
-    title: "Merge K Sorted Lists",
-    difficulty: "Hard",
-    category: "Heap",
-    status: "Todo",
-    acceptance: "49.8%",
-  },
-];
+import { useProblems } from "@/hooks/useProblems";
+import { type Difficulty, type Status } from "@/types/problems";
+import { capitalize, formatDaysAgo } from "@/lib/utils";
 
 const difficultyColors: Record<Difficulty, string> = {
-  Easy: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
-  Medium: "bg-chart-3/20 text-chart-3 hover:bg-chart-3/30",
-  Hard: "bg-destructive/20 text-destructive hover:bg-destructive/30",
+  easy: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
+  medium: "bg-chart-3/20 text-chart-3 hover:bg-chart-3/30",
+  hard: "bg-destructive/20 text-destructive hover:bg-destructive/30",
 };
 
 const statusIcons: Record<Status, React.ReactNode> = {
-  Solved: <CheckCircle2 className="h-4 w-4 text-chart-2" />,
-  Attempted: <RotateCcw className="h-4 w-4 text-chart-3" />,
-  Todo: <Circle className="h-4 w-4 text-muted-foreground" />,
+  solved: <CheckCircle2 className="h-4 w-4 text-chart-2" />,
+  attempted: <RotateCcw className="h-4 w-4 text-chart-3" />,
+  todo: <Circle className="h-4 w-4 text-muted-foreground" />,
 };
 
 interface ProblemsTableProps {
@@ -136,7 +54,9 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
     "All"
   );
 
-  const filteredProblems = problems.filter((problem) => {
+  const { problems } = useProblems();
+
+  const filteredProblems = problems?.filter((problem) => {
     const matchesSearch =
       problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       problem.category.toLowerCase().includes(searchQuery.toLowerCase());
@@ -145,7 +65,7 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
     return matchesSearch && matchesDifficulty;
   });
 
-  const [empty] = useState<boolean>(true);
+  const empty = problems?.length === 0;
 
   return (
     <Card className="border-border bg-card">
@@ -182,15 +102,15 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                   <DropdownMenuItem onClick={() => setDifficultyFilter("All")}>
                     All
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDifficultyFilter("Easy")}>
+                  <DropdownMenuItem onClick={() => setDifficultyFilter("easy")}>
                     Easy
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => setDifficultyFilter("Medium")}
+                    onClick={() => setDifficultyFilter("medium")}
                   >
                     Medium
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDifficultyFilter("Hard")}>
+                  <DropdownMenuItem onClick={() => setDifficultyFilter("hard")}>
                     Hard
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -213,7 +133,7 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                   Difficulty
                 </TableHead>
                 <TableHead className="text-muted-foreground hidden md:table-cell">
-                  Acceptance
+                  Time Taken
                 </TableHead>
                 <TableHead className="text-muted-foreground hidden lg:table-cell">
                   Last Attempt
@@ -223,17 +143,17 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
             </TableHeader>
             <TableBody>
               {!empty ? (
-                filteredProblems.map((problem) => (
+                filteredProblems?.map((problem) => (
                   <TableRow
                     key={problem.id}
                     className="border-border hover:bg-muted/50"
                   >
-                    <TableCell>{statusIcons[problem.status]}</TableCell>
+                    <TableCell>{statusIcons[problem?.status]}</TableCell>
                     <TableCell className="font-medium text-foreground">
-                      {problem.title}
+                      {capitalize(problem?.title)}
                     </TableCell>
                     <TableCell className="text-muted-foreground hidden sm:table-cell">
-                      {problem.category}
+                      {problem?.category}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -244,10 +164,10 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-muted-foreground hidden md:table-cell">
-                      {problem.acceptance}
+                      {problem?.time_taken} min
                     </TableCell>
                     <TableCell className="text-muted-foreground hidden lg:table-cell">
-                      {problem.lastAttempt || "-"}
+                      {formatDaysAgo(problem?.date_solved) || "-"}
                     </TableCell>
                     <TableCell>
                       <Button
@@ -294,7 +214,7 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
         {page == "problems" && !empty && (
           <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
             <span>
-              Showing {filteredProblems.length} of {problems.length} problems
+              Showing {filteredProblems?.length} of {problems?.length} problems
             </span>
             <div className="flex items-center gap-2">
               <Button

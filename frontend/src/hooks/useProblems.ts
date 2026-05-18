@@ -1,11 +1,11 @@
-import type { ProblemsForm } from "@/types/problems";
+import type { ProblemsForm, ProblemsResponse } from "@/types/problems";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useProblems = () => {
   const queryClient = useQueryClient();
 
-  const { data: problems, isLoading } = useQuery({
+  const { data: problems, isLoading } = useQuery<ProblemsResponse[]>({
     queryKey: ["problems"],
     queryFn: () => axios.get("/problems/all").then((res) => res.data),
   });

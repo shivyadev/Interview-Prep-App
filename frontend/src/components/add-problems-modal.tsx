@@ -142,9 +142,9 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                           <div className="flex items-center gap-2">
                             <span
                               className={`h-2 w-2 rounded-full ${
-                                diff === "Easy"
+                                diff === "easy"
                                   ? "bg-emerald-500"
-                                  : diff === "Medium"
+                                  : diff === "medium"
                                   ? "bg-amber-500"
                                   : "bg-rose-500"
                               }`}
@@ -216,7 +216,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                   <Input
                     id="timeTaken"
                     type="number"
-                    placeholder="e.g., 45"
+                    placeholder="e.g., 45 min"
                     min="0"
                     onChange={(e) =>
                       setForm({
