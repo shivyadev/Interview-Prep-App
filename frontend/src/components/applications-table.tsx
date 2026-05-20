@@ -20,40 +20,23 @@ import {
 import {
   Search,
   Filter,
-  ExternalLink,
   Briefcase,
   Plus,
   Building2,
   MapPin,
   Calendar,
+  Edit2,
+  Trash2,
+  Link2,
 } from "lucide-react";
 import { AddApplicationModal } from "./add-applications-modal";
-
-type ApplicationStatus =
-  | "Applied"
-  | "OA Received"
-  | "Interview Scheduled"
-  | "Rejected"
-  | "Offer"
-  | "Withdrawn";
-type Priority = "High" | "Medium" | "Low";
-type LocationType = "Remote" | "On-site" | "Hybrid";
-
-interface Application {
-  id: number;
-  company: string;
-  role: string;
-  location: string;
-  locationType: LocationType;
-  status: ApplicationStatus;
-  dateApplied: string;
-  nextFollowUp?: string;
-  priority: Priority;
-  source: string;
-}
-
-// Empty array to show empty state
-const applications: Application[] = [];
+import { useApplications } from "@/hooks/useApplications";
+import type {
+  ApplicationsForm,
+  ApplicationStatus,
+  LocationType,
+} from "@/types/applications";
+import { capitalize, formatInterviewDate } from "@/lib/utils";
 
 const statusColors: Record<ApplicationStatus, string> = {
   Applied: "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30",
@@ -62,12 +45,6 @@ const statusColors: Record<ApplicationStatus, string> = {
   Rejected: "bg-destructive/20 text-destructive hover:bg-destructive/30",
   Offer: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
   Withdrawn: "bg-muted text-muted-foreground hover:bg-muted/80",
-};
-
-const priorityColors: Record<Priority, string> = {
-  High: "bg-destructive/20 text-destructive",
-  Medium: "bg-chart-3/20 text-chart-3",
-  Low: "bg-muted text-muted-foreground",
 };
 
 const locationTypeIcons: Record<LocationType, React.ReactNode> = {
@@ -82,7 +59,19 @@ export function ApplicationsTable() {
     ApplicationStatus | "All"
   >("All");
 
-  const filteredApplications = applications.filter((app) => {
+  const { applications } = useApplications();
+
+  const handleEdit = (app: ApplicationsForm) => {
+    console.log("Edit application:", app);
+    // TODO: Implement edit modal or navigation
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete application with id:", id);
+    // TODO: Implement delete confirmation and API call
+  };
+
+  const filteredApplications = applications?.filter((app) => {
     const matchesSearch =
       app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.role.toLowerCase().includes(searchQuery.toLowerCase());
@@ -90,7 +79,7 @@ export function ApplicationsTable() {
     return matchesSearch && matchesStatus;
   });
 
-  const isEmpty = filteredApplications.length === 0;
+  const isEmpty = filteredApplications?.length === 0;
 
   return (
     <Card className="border-border bg-card">
@@ -117,7 +106,7 @@ export function ApplicationsTable() {
                   className="h-9 gap-2 border-border bg-muted"
                 >
                   <Filter className="h-4 w-4" />
-                  {statusFilter === "All" ? "Status" : statusFilter}
+                  {statusFilter === "All" ? "Status" : capitalize(statusFilter)}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -161,17 +150,19 @@ export function ApplicationsTable() {
                 <TableHead className="text-muted-foreground hidden sm:table-cell">
                   Location
                 </TableHead>
-                <TableHead className="text-muted-foreground">Status</TableHead>
                 <TableHead className="text-muted-foreground hidden md:table-cell">
-                  Priority
+                  Source
                 </TableHead>
+                <TableHead className="text-muted-foreground">Status</TableHead>
                 <TableHead className="text-muted-foreground hidden lg:table-cell">
-                  Applied
+                  Date Applied
                 </TableHead>
                 <TableHead className="text-muted-foreground hidden xl:table-cell">
                   Follow-up
                 </TableHead>
-                <TableHead className="text-muted-foreground w-10"></TableHead>
+                <TableHead className="text-muted-foreground w-20">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -204,7 +195,7 @@ export function ApplicationsTable() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredApplications.map((app) => (
+                filteredApplications?.map((app) => (
                   <TableRow
                     key={app.id}
                     className="border-border hover:bg-muted/50"
@@ -215,7 +206,7 @@ export function ApplicationsTable() {
                           <Building2 className="h-4 w-4 text-muted-foreground" />
                         </div>
                         <span className="font-medium text-foreground">
-                          {app.company}
+                          {capitalize(app.company)}
                         </span>
                       </div>
                     </TableCell>
@@ -225,45 +216,58 @@ export function ApplicationsTable() {
                     <TableCell className="hidden sm:table-cell">
                       <div className="flex items-center gap-1.5 text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" />
-                        <span className="text-sm">{app.location}</span>
+                        <span className="text-sm">{app?.location}</span>
                         <span className="text-xs">
-                          ({locationTypeIcons[app.locationType]})
+                          {locationTypeIcons[app?.location_type]}
                         </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                        <Link2 className="h-3.5 w-3.5 shrink-0" />
+                        {capitalize(app?.source)}
                       </div>
                     </TableCell>
                     <TableCell>
                       <Badge
                         variant="secondary"
-                        className={statusColors[app.status]}
+                        className={statusColors[app?.status]}
                       >
-                        {app.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      <Badge
-                        variant="secondary"
-                        className={priorityColors[app.priority]}
-                      >
-                        {app.priority}
+                        {app?.status}
                       </Badge>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
                         <Calendar className="h-3.5 w-3.5" />
-                        {app.dateApplied}
+                        {app?.date_applied}
                       </div>
                     </TableCell>
                     <TableCell className="hidden xl:table-cell text-muted-foreground text-sm">
-                      {app.nextFollowUp || "-"}
+                      {app.interview_date
+                        ? formatInterviewDate(app?.interview_date)
+                        : "-"}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          onClick={() => handleEdit(app)}
+                          title="Edit application"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(app.id)}
+                          title="Delete application"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -274,7 +278,7 @@ export function ApplicationsTable() {
         {!isEmpty && (
           <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
             <span>
-              Showing {filteredApplications.length} of {applications.length}{" "}
+              Showing {filteredApplications?.length} of {applications?.length}{" "}
               applications
             </span>
             <div className="flex items-center gap-2">

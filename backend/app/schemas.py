@@ -24,18 +24,12 @@ class ApplicationsBase(BaseModel):
 
     company : str
     role : str
-    job_desc_url : str
-    job_type : str
     location : str
+    location_type: str
     status : str
     source : str
-    interview_date : date
-    interview_type : str
-    rounds_completed : str
-    recruiter_mail : str
-    min_salary : int 
-    max_salary : int 
-
+    date_applied: str
+    interview_date: str
 class ApplicationsRequest(ApplicationsBase):
     pass
 

@@ -24,3 +24,14 @@ export function formatDaysAgo(date: string): string {
 export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export const formatInterviewDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+};

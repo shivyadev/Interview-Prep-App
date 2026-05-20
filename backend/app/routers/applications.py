@@ -12,10 +12,6 @@ def test():
 @router.get("/all", response_model=list[schemas.ApplicationResponse])
 def get_all_applications(db: Session = Depends(get_db)):
     items = db.query(models.Application).all()
-
-    if not items or len(items) <= 0:
-        raise HTTPException(status_code=200, detail="No values in the database")
-
     return items
 
 @router.post("/add", response_model=schemas.ApplicationResponse, status_code=201)

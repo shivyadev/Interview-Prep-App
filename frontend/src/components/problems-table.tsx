@@ -20,16 +20,22 @@ import {
 import {
   Search,
   Filter,
-  ExternalLink,
   CheckCircle2,
   Circle,
   RotateCcw,
   Code2,
   Plus,
+  Edit2,
+  Trash2,
+  ExternalLink,
 } from "lucide-react";
 import { AddProblemModal } from "./add-problems-modal";
 import { useProblems } from "@/hooks/useProblems";
-import { type Difficulty, type Status } from "@/types/problems";
+import {
+  type Difficulty,
+  type ProblemsForm,
+  type Status,
+} from "@/types/problems";
 import { capitalize, formatDaysAgo } from "@/lib/utils";
 
 const difficultyColors: Record<Difficulty, string> = {
@@ -55,6 +61,16 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
   );
 
   const { problems } = useProblems();
+
+  const handleEdit = (problem: ProblemsForm) => {
+    console.log("Edit problem:", problem);
+    // TODO: Implement edit modal or navigation
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete problem with id:", id);
+    // TODO: Implement delete confirmation and API call
+  };
 
   const filteredProblems = problems?.filter((problem) => {
     const matchesSearch =
@@ -138,7 +154,12 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                 <TableHead className="text-muted-foreground hidden lg:table-cell">
                   Last Attempt
                 </TableHead>
-                <TableHead className="text-muted-foreground w-10"></TableHead>
+                <TableHead className="text-muted-foreground">
+                  Problem Url
+                </TableHead>
+                <TableHead className="text-muted-foreground w-20">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -160,7 +181,7 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                         variant="secondary"
                         className={difficultyColors[problem.difficulty]}
                       >
-                        {problem.difficulty}
+                        {problem?.difficulty}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-muted-foreground hidden md:table-cell">
@@ -177,6 +198,28 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          onClick={() => handleEdit(problem)}
+                          title="Edit problem"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(problem.id)}
+                          title="Delete problem"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

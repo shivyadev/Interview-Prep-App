@@ -20,64 +20,63 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Briefcase, X } from "lucide-react";
+import { Briefcase } from "lucide-react";
+import {
+  APPLICATIONSTATUS,
+  APPLICATIONSOURCES,
+  LOCATIONTYPE,
+  type ApplicationsForm,
+} from "@/types/applications";
+
+import { toast } from "sonner";
+import { useApplications } from "@/hooks/useApplications";
 
 interface AddApplicationModalProps {
   trigger?: React.ReactNode;
 }
 
-const applicationStatuses = [
-  "Applied",
-  "OA Received",
-  "OA Completed",
-  "Phone Screen Scheduled",
-  "Phone Screen Completed",
-  "Interview Scheduled",
-  "Interview Completed",
-  "Final Round",
-  "Offer Received",
-  "Offer Accepted",
-  "Rejected",
-  "Withdrawn",
-];
-
-const applicationSources = [
-  "LinkedIn",
-  "Company Portal",
-  "Referral",
-  "Indeed",
-  "Glassdoor",
-  "AngelList",
-  "Handshake",
-  "Career Fair",
-  "Recruiter Outreach",
-  "Other",
-];
-
-const workLocations = ["Remote", "On-site", "Hybrid"];
-
 export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
   const [open, setOpen] = useState(false);
-  const [interviewRounds, setInterviewRounds] = useState<string[]>([]);
-  const [newRound, setNewRound] = useState("");
 
-  const handleAddRound = () => {
-    if (newRound.trim() && !interviewRounds.includes(newRound.trim())) {
-      setInterviewRounds([...interviewRounds, newRound.trim()]);
-      setNewRound("");
-    }
+  const initialFormState: Partial<ApplicationsForm> = {
+    company: undefined,
+    role: undefined,
+    location: undefined,
+    location_type: undefined,
+    status: undefined,
+    date_applied: new Date().toISOString().split("T")[0],
+    interview_date: undefined,
+    source: undefined,
   };
 
-  const handleRemoveRound = (round: string) => {
-    setInterviewRounds(interviewRounds.filter((r) => r !== round));
-  };
+  const [form, setForm] = useState<Partial<ApplicationsForm>>(initialFormState);
+  const { addApplication } = useApplications();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    setOpen(false);
+
+    if (
+      !form.company ||
+      !form.role ||
+      !form.location ||
+      !form.location_type ||
+      !form.status ||
+      !form.date_applied ||
+      !form.interview_date ||
+      !form.source
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    addApplication.mutate(form as ApplicationsForm, {
+      onSuccess: () => {
+        setOpen(false);
+        setForm(initialFormState);
+        toast.success("Application added successfully");
+      },
+    });
   };
 
   return (
@@ -108,6 +107,7 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
         <ScrollArea className="max-h-[60vh] px-6">
           <form onSubmit={handleSubmit} className="space-y-6 pb-6">
             {/* Company & Role */}
+            {/* Company & Role */}
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                 Company & Role
@@ -116,7 +116,14 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="company">Company Name *</Label>
-                  <Input id="company" placeholder="e.g., Google" required />
+                  <Input
+                    id="company"
+                    placeholder="e.g., Google"
+                    required
+                    onChange={(e) =>
+                      setForm({ ...form, company: e.target.value })
+                    }
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -125,22 +132,23 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
                     id="role"
                     placeholder="e.g., Software Engineer"
                     required
+                    onChange={(e) => setForm({ ...form, role: e.target.value })}
                   />
-                </div>
-
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="jobUrl">Job Description URL</Label>
-                  <Input id="jobUrl" type="url" placeholder="https://..." />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="location">Work Location *</Label>
-                  <Select required>
+                  <Select
+                    required
+                    onValueChange={(value) =>
+                      setForm({ ...form, location_type: value })
+                    }
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select location type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {workLocations.map((loc) => (
+                      {LOCATIONTYPE.map((loc) => (
                         <SelectItem key={loc} value={loc.toLowerCase()}>
                           {loc}
                         </SelectItem>
@@ -154,6 +162,9 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
                   <Input
                     id="officeLocation"
                     placeholder="e.g., San Francisco, CA"
+                    onChange={(e) =>
+                      setForm({ ...form, location: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -168,16 +179,18 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="status">Current Status *</Label>
-                  <Select required>
+                  <Select
+                    required
+                    onValueChange={(value) =>
+                      setForm({ ...form, status: value })
+                    }
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      {applicationStatuses.map((status) => (
-                        <SelectItem
-                          key={status}
-                          value={status.toLowerCase().replace(/\s+/g, "-")}
-                        >
+                      {APPLICATIONSTATUS.map((status) => (
+                        <SelectItem key={status} value={status}>
                           <div className="flex items-center gap-2">
                             <span
                               className={`h-2 w-2 rounded-full ${
@@ -202,16 +215,18 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="source">Application Source *</Label>
-                  <Select required>
+                  <Select
+                    required
+                    onValueChange={(value) =>
+                      setForm({ ...form, source: value })
+                    }
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Where did you apply?" />
                     </SelectTrigger>
                     <SelectContent>
-                      {applicationSources.map((source) => (
-                        <SelectItem
-                          key={source}
-                          value={source.toLowerCase().replace(/\s+/g, "-")}
-                        >
+                      {APPLICATIONSOURCES.map((source) => (
+                        <SelectItem key={source} value={source}>
                           {source}
                         </SelectItem>
                       ))}
@@ -221,7 +236,14 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="dateApplied">Date Applied *</Label>
-                  <Input id="dateApplied" type="date" required />
+                  <Input
+                    id="dateApplied"
+                    type="date"
+                    required
+                    onChange={(e) =>
+                      setForm({ ...form, date_applied: e.target.value })
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -235,124 +257,15 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="nextInterview">Next Interview Date</Label>
-                  <Input id="nextInterview" type="datetime-local" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="interviewType">Interview Type</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="phone">Phone Screen</SelectItem>
-                      <SelectItem value="technical">Technical</SelectItem>
-                      <SelectItem value="behavioral">Behavioral</SelectItem>
-                      <SelectItem value="system-design">
-                        System Design
-                      </SelectItem>
-                      <SelectItem value="onsite">Onsite</SelectItem>
-                      <SelectItem value="virtual-onsite">
-                        Virtual Onsite
-                      </SelectItem>
-                      <SelectItem value="hiring-manager">
-                        Hiring Manager
-                      </SelectItem>
-                      <SelectItem value="final">Final Round</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2 sm:col-span-2">
-                  <Label>Interview Rounds Completed</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      value={newRound}
-                      onChange={(e) => setNewRound(e.target.value)}
-                      placeholder="Add completed round (e.g., Phone Screen)"
-                      onKeyDown={(e) =>
-                        e.key === "Enter" &&
-                        (e.preventDefault(), handleAddRound())
-                      }
-                    />
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={handleAddRound}
-                    >
-                      Add
-                    </Button>
-                  </div>
-                  {interviewRounds.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {interviewRounds.map((round, index) => (
-                        <Badge
-                          key={round}
-                          variant="secondary"
-                          className="gap-1"
-                        >
-                          {index + 1}. {round}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveRound(round)}
-                            className="ml-1 hover:text-destructive"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Contacts & Referral */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Contacts & Referral
-              </h3>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="recruiterName">Recruiter Name</Label>
-                  <Input id="recruiterName" placeholder="e.g., Jane Smith" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="recruiterContact">
-                    Recruiter Email / LinkedIn
-                  </Label>
                   <Input
-                    id="recruiterContact"
-                    placeholder="e.g., jane@company.com"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Documents & Compensation */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Compensation
-              </h3>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="salaryMin">Expected Salary (Min)</Label>
-                  <Input
-                    id="salaryMin"
-                    type="number"
-                    placeholder="e.g., 120000"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="salaryMax">Expected Salary (Max)</Label>
-                  <Input
-                    id="salaryMax"
-                    type="number"
-                    placeholder="e.g., 150000"
+                    id="nextInterview"
+                    type="datetime-local"
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        interview_date: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
