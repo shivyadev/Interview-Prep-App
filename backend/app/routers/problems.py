@@ -25,4 +25,14 @@ def add_problem(problem: schemas.ProblemsRequest, db: Session = Depends(get_db))
 
     return db_problem
     
-
+@router.delete("/{problem_id}")
+def delete_problem(problem_id: str, db: Session = Depends(get_db)):
+    problem = db.query(models.Problem).filter(models.Problem.id == problem_id).first()
+    
+    if not problem:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    
+    db.delete(problem)
+    db.commit()
+    
+    return {"message": "Problem deleted successfully"}

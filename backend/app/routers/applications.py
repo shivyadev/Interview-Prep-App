@@ -30,4 +30,16 @@ def add_application(application: schemas.ApplicationsRequest, db: Session = Depe
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
     
+@router.delete("/{application_id}")
+def delete_problem(application_id: str, db: Session = Depends(get_db)):
+    application = db.query(models.Application).filter(models.Application.id == application_id).first()
+    
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+    
+    db.delete(application)
+    db.commit()
+    
+    return {"message": "Application deleted successfully"}
+
 

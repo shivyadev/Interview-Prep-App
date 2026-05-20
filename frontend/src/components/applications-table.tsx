@@ -37,6 +37,7 @@ import type {
   LocationType,
 } from "@/types/applications";
 import { capitalize, formatInterviewDate } from "@/lib/utils";
+import { toast } from "sonner";
 
 const statusColors: Record<ApplicationStatus, string> = {
   Applied: "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30",
@@ -59,7 +60,7 @@ export function ApplicationsTable() {
     ApplicationStatus | "All"
   >("All");
 
-  const { applications } = useApplications();
+  const { applications, deleteApplication } = useApplications();
 
   const handleEdit = (app: ApplicationsForm) => {
     console.log("Edit application:", app);
@@ -67,8 +68,11 @@ export function ApplicationsTable() {
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete application with id:", id);
-    // TODO: Implement delete confirmation and API call
+    deleteApplication.mutate(id, {
+      onSuccess: () => {
+        toast.success("Application deleted successfully.");
+      },
+    });
   };
 
   const filteredApplications = applications?.filter((app) => {

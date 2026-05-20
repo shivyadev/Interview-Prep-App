@@ -18,7 +18,7 @@ export const useProblems = () => {
   });
 
   const deleteProblem = useMutation({
-    mutationFn: (id) => axios.delete(`/problems/${id}`),
+    mutationFn: (id: string) => axios.delete(`/problems/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["problems"] });
     },

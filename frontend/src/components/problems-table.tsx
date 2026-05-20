@@ -37,6 +37,7 @@ import {
   type Status,
 } from "@/types/problems";
 import { capitalize, formatDaysAgo } from "@/lib/utils";
+import { toast } from "sonner";
 
 const difficultyColors: Record<Difficulty, string> = {
   Easy: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
@@ -60,7 +61,7 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
     "All"
   );
 
-  const { problems } = useProblems();
+  const { problems, deleteProblem } = useProblems();
 
   const handleEdit = (problem: ProblemsForm) => {
     console.log("Edit problem:", problem);
@@ -68,8 +69,11 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete problem with id:", id);
-    // TODO: Implement delete confirmation and API call
+    deleteProblem.mutate(id, {
+      onSuccess: () => {
+        toast.success("Problem deleted successfully.");
+      },
+    });
   };
 
   const filteredProblems = problems?.filter((problem) => {

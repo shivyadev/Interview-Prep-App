@@ -22,7 +22,7 @@ export const useApplications = () => {
   });
 
   const deleteApplication = useMutation({
-    mutationFn: (id) => axios.delete(`/applications/${id}`),
+    mutationFn: (id: string) => axios.delete(`/applications/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
