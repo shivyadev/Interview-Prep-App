@@ -7,51 +7,58 @@ import {
   Target,
   Flame,
 } from "lucide-react";
-
-const stats = [
-  {
-    title: "Problems Solved",
-    value: "247",
-    change: "+12",
-    trend: "up",
-    icon: CheckCircle2,
-    description: "this week",
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
-  },
-  {
-    title: "Current Streak",
-    value: "23",
-    change: "+3",
-    trend: "up",
-    icon: Flame,
-    description: "days",
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
-  },
-  {
-    title: "Study Hours",
-    value: "48.5",
-    change: "-2.5",
-    trend: "down",
-    icon: Clock,
-    description: "this month",
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
-  },
-  {
-    title: "Accuracy Rate",
-    value: "78%",
-    change: "+5%",
-    trend: "up",
-    icon: Target,
-    description: "last 30 days",
-    color: "text-chart-3",
-    bgColor: "bg-chart-3/10",
-  },
-];
+import { useProblems } from "@/hooks/useProblems";
+import { useApplications } from "@/hooks/useApplications";
+import { calculateStreak } from "@/lib/utils";
 
 export default function StatCards() {
+  const { problems } = useProblems();
+  const { applications } = useApplications();
+
+  const problemsSolved = problems?.length ?? 0;
+  const currentStreak = calculateStreak(problems ?? []);
+  const appliedApplications = applications?.length ?? 0;
+  const responses = applications?.filter((a) => a.interview_date).length ?? 0;
+
+  const stats = [
+    {
+      title: "Problems Solved",
+      value: problemsSolved.toString(),
+      trend: "up" as const,
+      icon: CheckCircle2,
+      description: "total solved",
+      color: "text-chart-2",
+      bgColor: "bg-chart-2/10",
+    },
+    {
+      title: "Current Streak",
+      value: currentStreak.toString(),
+      trend: "up" as const,
+      icon: Flame,
+      description: "days",
+      color: "text-chart-5",
+      bgColor: "bg-chart-5/10",
+    },
+    {
+      title: "Applied Applications",
+      value: appliedApplications.toString(),
+      trend: "up" as const,
+      icon: Clock,
+      description: "total applied",
+      color: "text-chart-1",
+      bgColor: "bg-chart-1/10",
+    },
+    {
+      title: "Responses",
+      value: responses.toString(),
+      trend: responses > 0 ? ("up" as const) : ("down" as const),
+      icon: Target,
+      description: "interview dates set",
+      color: "text-chart-3",
+      bgColor: "bg-chart-3/10",
+    },
+  ];
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
@@ -74,13 +81,6 @@ export default function StatCards() {
               ) : (
                 <TrendingDown className="h-3 w-3 text-destructive" />
               )}
-              <span
-                className={
-                  stat.trend === "up" ? "text-chart-2" : "text-destructive"
-                }
-              >
-                {stat.change}
-              </span>
               <span className="text-muted-foreground">{stat.description}</span>
             </div>
           </CardContent>
