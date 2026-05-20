@@ -138,13 +138,13 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                     </SelectTrigger>
                     <SelectContent>
                       {DIFFICULTIES.map((diff) => (
-                        <SelectItem key={diff} value={diff.toLowerCase()}>
+                        <SelectItem key={diff} value={diff}>
                           <div className="flex items-center gap-2">
                             <span
                               className={`h-2 w-2 rounded-full ${
-                                diff === "easy"
+                                diff === "Easy"
                                   ? "bg-emerald-500"
-                                  : diff === "medium"
+                                  : diff === "Medium"
                                   ? "bg-amber-500"
                                   : "bg-rose-500"
                               }`}
@@ -200,10 +200,7 @@ export function AddProblemModal({ trigger }: AddProblemModalProps) {
                     </SelectTrigger>
                     <SelectContent>
                       {STATUSES.map((status) => (
-                        <SelectItem
-                          key={status}
-                          value={status.toLowerCase().replace(/\s+/g, "-")}
-                        >
+                        <SelectItem key={status} value={status}>
                           {status}
                         </SelectItem>
                       ))}

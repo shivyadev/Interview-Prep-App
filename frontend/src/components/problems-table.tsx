@@ -39,15 +39,15 @@ import {
 import { capitalize, formatDaysAgo } from "@/lib/utils";
 
 const difficultyColors: Record<Difficulty, string> = {
-  easy: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
-  medium: "bg-chart-3/20 text-chart-3 hover:bg-chart-3/30",
-  hard: "bg-destructive/20 text-destructive hover:bg-destructive/30",
+  Easy: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
+  Medium: "bg-chart-3/20 text-chart-3 hover:bg-chart-3/30",
+  Hard: "bg-destructive/20 text-destructive hover:bg-destructive/30",
 };
 
 const statusIcons: Record<Status, React.ReactNode> = {
-  solved: <CheckCircle2 className="h-4 w-4 text-chart-2" />,
-  attempted: <RotateCcw className="h-4 w-4 text-chart-3" />,
-  todo: <Circle className="h-4 w-4 text-muted-foreground" />,
+  Solved: <CheckCircle2 className="h-4 w-4 text-chart-2" />,
+  Attempted: <RotateCcw className="h-4 w-4 text-chart-3" />,
+  Todo: <Circle className="h-4 w-4 text-muted-foreground" />,
 };
 
 interface ProblemsTableProps {
@@ -118,15 +118,15 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                   <DropdownMenuItem onClick={() => setDifficultyFilter("All")}>
                     All
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDifficultyFilter("easy")}>
+                  <DropdownMenuItem onClick={() => setDifficultyFilter("Easy")}>
                     Easy
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => setDifficultyFilter("medium")}
+                    onClick={() => setDifficultyFilter("Medium")}
                   >
                     Medium
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDifficultyFilter("hard")}>
+                  <DropdownMenuItem onClick={() => setDifficultyFilter("Hard")}>
                     Hard
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -195,8 +195,15 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        asChild
                       >
-                        <ExternalLink className="h-4 w-4" />
+                        <a
+                          href={problem.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
                       </Button>
                     </TableCell>
                     <TableCell>

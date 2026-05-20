@@ -1,7 +1,7 @@
-export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
+export const DIFFICULTIES = ["Easy", "Medium", "Hard"] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 
-export const STATUSES = ["solved", "attempted", "todo"] as const;
+export const STATUSES = ["Solved", "Attempted", "Todo"] as const;
 export type Status = (typeof STATUSES)[number];
 
 export const CATEGORIES = [
