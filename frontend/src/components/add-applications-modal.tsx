@@ -63,7 +63,6 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
       !form.location_type ||
       !form.status ||
       !form.date_applied ||
-      !form.interview_date ||
       !form.source
     ) {
       toast.error("Please fill in all required fields");
@@ -264,6 +263,19 @@ export function AddApplicationModal({ trigger }: AddApplicationModalProps) {
                       setForm({
                         ...form,
                         interview_date: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="interviewType">Interview Type</Label>
+                  <Input
+                    id="interviewType"
+                    type="text"
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        interview_type: e.target.value,
                       })
                     }
                   />

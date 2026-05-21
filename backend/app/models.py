@@ -27,7 +27,8 @@ class Application(Base):
     status = Column(String)
     source = Column(String)
     date_applied = Column(String)
-    interview_date = Column(String)
+    interview_date = Column(String, default="")
+    interview_type = Column(String, default="")
 
 
 

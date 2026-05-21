@@ -90,3 +90,16 @@ export function calculateStreak(problems: ProblemsResponse[]): number {
 
   return streak;
 }
+
+export function countProblemTypes(problems: ProblemsResponse[]) {
+  return problems.reduce((acc, problem) => {
+    if (!acc[problem.category]) {
+      acc[problem.category] = { total: 0, solved: 0 };
+    }
+    acc[problem.category].total += 1;
+    if (problem.status === "Solved") {
+      acc[problem.category].solved += 1;
+    }
+    return acc;
+  }, {} as Record<string, { total: number; solved: number }>);
+}

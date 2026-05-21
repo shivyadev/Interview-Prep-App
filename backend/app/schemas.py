@@ -29,7 +29,8 @@ class ApplicationsBase(BaseModel):
     status : str
     source : str
     date_applied: str
-    interview_date: str
+    interview_date: str | None = None
+    interview_type: str | None = None
 class ApplicationsRequest(ApplicationsBase):
     pass
 

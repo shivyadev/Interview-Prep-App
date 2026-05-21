@@ -62,7 +62,6 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
   );
 
   const { problems, deleteProblem } = useProblems();
-
   const handleEdit = (problem: ProblemsForm) => {
     console.log("Edit problem:", problem);
     // TODO: Implement edit modal or navigation

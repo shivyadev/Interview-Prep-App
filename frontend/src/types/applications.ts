@@ -33,6 +33,7 @@ export type ApplicationsForm = {
   status: ApplicationStatus;
   date_applied: string;
   interview_date?: string;
+  interview_type: string;
   source: ApplicationSources;
 };
 
@@ -45,5 +46,6 @@ export type ApplicationResponse = {
   status: ApplicationStatus;
   date_applied: string;
   interview_date?: string;
+  interview_type: string;
   source: ApplicationSources;
 };
