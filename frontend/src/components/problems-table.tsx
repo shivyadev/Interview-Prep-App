@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -75,7 +75,19 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
     });
   };
 
-  const filteredProblems = problems?.filter((problem) => {
+  const displayedProblems = useMemo(() => {
+    if (page !== "dashboard") return problems;
+
+    return problems
+      ?.slice()
+      .sort(
+        (a, b) =>
+          new Date(b.date_solved).getTime() - new Date(a.date_solved).getTime()
+      )
+      .slice(0, 10);
+  }, [problems, page]);
+
+  const filteredProblems = displayedProblems?.filter((problem) => {
     const matchesSearch =
       problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       problem.category.toLowerCase().includes(searchQuery.toLowerCase());

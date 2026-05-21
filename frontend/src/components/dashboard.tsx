@@ -8,7 +8,7 @@ import { useApplications } from "@/hooks/useApplications";
 import Loader from "./loader";
 
 export default function Dashboard() {
-  const { isLoading: isLoadingProblems } = useProblems();
+  const { isLoading: isLoadingProblems, problems } = useProblems();
   const { isLoading: isLoadingApplication } = useApplications();
 
   return (

@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useProblems } from "@/hooks/useProblems";
+import { getWeeklyActivityData, getWeeklyProgressData } from "@/lib/utils";
 import {
   Area,
   AreaChart,
@@ -11,24 +13,10 @@ import {
   YAxis,
 } from "recharts";
 
-const activityData = [
-  { day: "Mon", problems: 8, hours: 2.5 },
-  { day: "Tue", problems: 12, hours: 3.2 },
-  { day: "Wed", problems: 6, hours: 1.8 },
-  { day: "Thu", problems: 15, hours: 4.0 },
-  { day: "Fri", problems: 10, hours: 2.8 },
-  { day: "Sat", problems: 18, hours: 5.2 },
-  { day: "Sun", problems: 14, hours: 3.5 },
-];
-
-const progressData = [
-  { week: "W1", easy: 12, medium: 8, hard: 3 },
-  { week: "W2", easy: 15, medium: 10, hard: 5 },
-  { week: "W3", easy: 10, medium: 12, hard: 4 },
-  { week: "W4", easy: 18, medium: 14, hard: 7 },
-];
-
 export function ActivityChart() {
+  const { problems } = useProblems();
+  const activityData = problems ? getWeeklyActivityData(problems) : [];
+
   return (
     <Card className="border-border bg-card">
       <CardHeader>
@@ -95,6 +83,9 @@ export function ActivityChart() {
 }
 
 export function ProgressChart() {
+  const { problems } = useProblems();
+  const progressData = problems ? getWeeklyProgressData(problems) : [];
+
   return (
     <Card className="border-border bg-card">
       <CardHeader>

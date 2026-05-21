@@ -103,3 +103,52 @@ export function countProblemTypes(problems: ProblemsResponse[]) {
     return acc;
   }, {} as Record<string, { total: number; solved: number }>);
 }
+
+export function getWeeklyActivityData(problems: ProblemsResponse[]) {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const counts: Record<string, number> = {
+    Sun: 0,
+    Mon: 0,
+    Tue: 0,
+    Wed: 0,
+    Thu: 0,
+    Fri: 0,
+    Sat: 0,
+  };
+
+  problems.forEach((p) => {
+    if (!p.date_solved) return;
+    const day = days[new Date(p.date_solved).getDay()];
+    counts[day] += 1;
+  });
+
+  // Return in Mon–Sun order
+  return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({
+    day,
+    problems: counts[day],
+  }));
+}
+
+export function getWeeklyProgressData(problems: ProblemsResponse[]) {
+  const weeks: Record<number, { easy: number; medium: number; hard: number }> =
+    {
+      1: { easy: 0, medium: 0, hard: 0 },
+      2: { easy: 0, medium: 0, hard: 0 },
+      3: { easy: 0, medium: 0, hard: 0 },
+      4: { easy: 0, medium: 0, hard: 0 },
+    };
+
+  problems.forEach((p) => {
+    if (!p.date_solved) return;
+    const day = new Date(p.date_solved).getDate(); // 1–31
+    const week = Math.min(Math.ceil(day / 7), 4); // 1–4
+
+    const difficulty = p.difficulty.toLowerCase() as "easy" | "medium" | "hard";
+    if (weeks[week] && difficulty in weeks[week]) {
+      weeks[week][difficulty] += 1;
+    }
+  });
+
+  return [1, 2, 3, 4].map((w) => ({ week: `W${w}`, ...weeks[w] }));
+}

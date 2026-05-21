@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  TrendingUp,
-  TrendingDown,
   CheckCircle2,
   Clock,
   Target,
   Flame,
+  Code2,
+  Award,
+  Send,
+  MessageSquare,
 } from "lucide-react";
 import { useProblems } from "@/hooks/useProblems";
 import { useApplications } from "@/hooks/useApplications";
@@ -15,7 +17,7 @@ export default function StatCards() {
   const { problems } = useProblems();
   const { applications } = useApplications();
 
-  const problemsSolved = problems?.length ?? 0;
+  const problemsSolved = problems?.filter((p) => p.status === "Solved").length;
   const currentStreak = calculateStreak(problems ?? []);
   const appliedApplications = applications?.length ?? 0;
   const responses = applications?.filter((a) => a.interview_date).length ?? 0;
@@ -23,39 +25,43 @@ export default function StatCards() {
   const stats = [
     {
       title: "Problems Solved",
-      value: problemsSolved.toString(),
-      trend: "up" as const,
+      value: problemsSolved?.toString(),
       icon: CheckCircle2,
-      description: "total solved",
+      bottomIcon: Code2,
+      description: `of ${problems?.length} total`,
       color: "text-chart-2",
       bgColor: "bg-chart-2/10",
+      layout: "compact" as const,
     },
     {
       title: "Current Streak",
       value: currentStreak.toString(),
-      trend: "up" as const,
       icon: Flame,
+      bottomIcon: Award,
       description: "days",
       color: "text-chart-5",
       bgColor: "bg-chart-5/10",
+      layout: "compact" as const,
     },
     {
       title: "Applied Applications",
       value: appliedApplications.toString(),
-      trend: "up" as const,
       icon: Clock,
+      bottomIcon: Send,
       description: "total applied",
       color: "text-chart-1",
       bgColor: "bg-chart-1/10",
+      layout: "compact" as const,
     },
     {
       title: "Responses",
       value: responses.toString(),
-      trend: responses > 0 ? ("up" as const) : ("down" as const),
       icon: Target,
+      bottomIcon: MessageSquare,
       description: "interview dates set",
       color: "text-chart-3",
       bgColor: "bg-chart-3/10",
+      layout: "compact" as const,
     },
   ];
 
@@ -72,16 +78,15 @@ export default function StatCards() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {stat.value}
-            </div>
-            <div className="flex items-center mt-2 gap-1 text-xs">
-              {stat.trend === "up" ? (
-                <TrendingUp className="h-3 w-3 text-chart-2" />
-              ) : (
-                <TrendingDown className="h-3 w-3 text-destructive" />
-              )}
-              <span className="text-muted-foreground">{stat.description}</span>
+            <div className="flex items-end gap-3">
+              <div className="text-4xl font-bold text-foreground">
+                {stat.value}
+              </div>
+              <div className="flex flex-col gap-1 mb-1">
+                <span className="text-xs text-muted-foreground">
+                  {stat.description}
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>
