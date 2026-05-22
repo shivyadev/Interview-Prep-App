@@ -30,6 +30,19 @@ def add_application(application: schemas.ApplicationsRequest, db: Session = Depe
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
     
+@router.patch("/{id}", response_model= schemas.ApplicationResponse)
+async def edit_problem(id: str, application: schemas.ApplicationsRequest, db: Session = Depends(get_db)):
+    db_application = db.query(models.Application).filter(models.Application.id == id).first()
+    if not db_application:
+        raise HTTPException(status_code=404, detail="Application not found")
+    
+    for field, value in application.model_dump(exclude_unset=True).items():
+        setattr(db_application, field, value)
+
+    db.commit()
+    db.refresh(db_application)
+    return db_application
+
 @router.delete("/{application_id}")
 def delete_problem(application_id: str, db: Session = Depends(get_db)):
     application = db.query(models.Application).filter(models.Application.id == application_id).first()

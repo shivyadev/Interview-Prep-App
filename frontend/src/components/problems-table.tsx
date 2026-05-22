@@ -38,6 +38,7 @@ import {
 } from "@/types/problems";
 import { capitalize, formatDaysAgo } from "@/lib/utils";
 import { toast } from "sonner";
+import { EditProblemModal } from "./edit-problems-modal";
 
 const difficultyColors: Record<Difficulty, string> = {
   Easy: "bg-chart-2/20 text-chart-2 hover:bg-chart-2/30",
@@ -223,15 +224,20 @@ export function ProblemsTable({ page }: ProblemsTableProps) {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
-                          onClick={() => handleEdit(problem)}
-                          title="Edit problem"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
+                        <EditProblemModal
+                          trigger={
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+                              onClick={() => handleEdit(problem)}
+                              title="Edit problem"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                          }
+                          problem={problem}
+                        />
                         <Button
                           variant="ghost"
                           size="icon"

@@ -17,6 +17,21 @@ export const useProblems = () => {
     },
   });
 
+  const editProblem = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<ProblemsResponse>;
+    }) => {
+      await axios.patch(`/problems/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["problems"] });
+    },
+  });
+
   const deleteProblem = useMutation({
     mutationFn: (id: string) => axios.delete(`/problems/${id}`),
     onSuccess: () => {
@@ -24,5 +39,5 @@ export const useProblems = () => {
     },
   });
 
-  return { problems, addProblem, deleteProblem, isLoading };
+  return { problems, addProblem, editProblem, deleteProblem, isLoading };
 };

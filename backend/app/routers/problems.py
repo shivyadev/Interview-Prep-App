@@ -24,7 +24,20 @@ def add_problem(problem: schemas.ProblemsRequest, db: Session = Depends(get_db))
     db.refresh(db_problem)
 
     return db_problem
+
+@router.patch("/{id}", response_model= schemas.ProblemsResponse)
+async def edit_problem(id: str, problem: schemas.ProblemsRequest, db: Session = Depends(get_db)):
+    db_problem = db.query(models.Problem).filter(models.Problem.id == id).first()
+    if not db_problem:
+        raise HTTPException(status_code=404, detail="Problem not found")
     
+    for field, value in problem.model_dump(exclude_unset=True).items():
+        setattr(db_problem, field, value)
+
+    db.commit()
+    db.refresh(db_problem)
+    return db_problem
+
 @router.delete("/{problem_id}")
 def delete_problem(problem_id: str, db: Session = Depends(get_db)):
     problem = db.query(models.Problem).filter(models.Problem.id == problem_id).first()

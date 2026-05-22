@@ -21,6 +21,19 @@ export const useApplications = () => {
     },
   });
 
+  const editApplication = useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<ApplicationResponse>;
+    }) => axios.patch(`/applications/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
+    },
+  });
+
   const deleteApplication = useMutation({
     mutationFn: (id: string) => axios.delete(`/applications/${id}`),
     onSuccess: () => {
@@ -28,5 +41,11 @@ export const useApplications = () => {
     },
   });
 
-  return { applications, addApplication, deleteApplication, isLoading };
+  return {
+    applications,
+    addApplication,
+    editApplication,
+    deleteApplication,
+    isLoading,
+  };
 };
